@@ -1,0 +1,8 @@
+version: '3'
+services:
+  terraform:
+    build: .
+    tty: true
+    stdin_open: true
+    volumes:
+      - ./app:/terraform/app
