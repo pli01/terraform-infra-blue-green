@@ -1,8 +1,20 @@
-version: '3'
+version: '3.5'
+
 services:
   terraform:
-    build: .
+    image: cli/terraform:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        http_proxy: ${http_proxy}
+        https_proxy: ${http_proxy}
+        no_proxy: ${no_proxy}
+        PYPI_URL: ${PYPI_URL}
+        PYPI_HOST: ${PYPI_HOST}
+        MIRROR_DEBIAN: ${MIRROR_DEBIAN}
+
     tty: true
     stdin_open: true
     volumes:
-      - ./app:/terraform/app
+      - ./terraform:/terraform/terraform
