@@ -29,7 +29,7 @@ resource "docker_image" "api_image" {
 # create api container
 resource "docker_container" "api" {
   count   = var.maxcount
-  name    = format("%s-%s-%s", var.prefix_name, var.color, count.index + 1)
+  name    = format("%s-%s-%s", var.color, var.prefix_name, count.index + 1)
   image   = docker_image.api_image.latest
   restart = "always"
   networks_advanced {
