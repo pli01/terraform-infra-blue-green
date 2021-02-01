@@ -1,0 +1,12 @@
+upstream api-${COLOR} {
+    # generate a list of server:
+    # server name1:port; server name2:port;
+    ${API_SERVER}
+}
+
+server {
+    listen 80;
+    location / {
+            proxy_pass http://api-${COLOR};
+    }
+}
