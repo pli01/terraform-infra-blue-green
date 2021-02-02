@@ -1,6 +1,4 @@
-check-var-%:
-	@: $(if $(value $*),,$(error $* is undefined))
-
+SHELL = /bin/bash
 TF_LOG := # debug
 TF_BIN := $(shell type -p terraform)
 TF_IN_AUTOMATION := # true
@@ -15,6 +13,9 @@ DC_BUILD_ARGS := --pull --no-cache --force-rm
 DC_TF_DOCKER_CLI := docker-compose.yml
 export
 
+check-var-%:
+	@: $(if $(value $*),,$(error $* is undefined))
+
 all:
 	@echo "Usage: make PROJECT='myapp' build | deploy | destroy"
 #
@@ -23,14 +24,16 @@ all:
 build:
 	${DC} -f ${DC_TF_DOCKER_CLI} build ${DC_BUILD_ARGS}
 
-#
+tf-validate:| check-var-PROJECT
+	${DC} -f ${DC_TF_DOCKER_CLI} run --rm terraform -c 'terraform validate ${PROJECT}'
+
+tf-%:| check-var-PROJECT
+	${DC} -f ${DC_TF_DOCKER_CLI} run --rm terraform -c 'make PROJECT=${PROJECT} $*'
+
 #
 # terraform deploy
 #
 deploy: validate plan apply
-
-tf-validate:| check-var-PROJECT
-	${DC} -f ${DC_TF_DOCKER_CLI} run --rm terraform -c 'terraform validate ${PROJECT}'
 
 init:| check-var-PROJECT
 	${TF_BIN} init ${PROJECT}
