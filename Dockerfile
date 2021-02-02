@@ -40,6 +40,6 @@ RUN curl -O https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraf
 COPY provider.tf .
 RUN mkdir -p /usr/local/share/terraform/plugins && \
       echo 'plugin_cache_dir = "/usr/local/share/terraform/plugins"' > $HOME/.terraformrc && \
-      TF_LOG=trace terraform init -backend=false
+      terraform init -backend=false
 
 ENTRYPOINT ["/bin/bash"]

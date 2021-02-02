@@ -89,7 +89,7 @@ You can deploy and choose:
 ## Test it
 * First run
 ```
-make PROJECT=terraform/app-docker init
+# make PROJECT=terraform/app-docker init
 ```
 * Deploy default blue (1 blue-api)
 ```
@@ -113,7 +113,7 @@ Hello, blue from e648210be937
 ```
 * Deploy 2 blue container
 ```
-export TF_VAR_blue_api_count=2
+# export TF_VAR_blue_api_count=2
 # make PROJECT=terraform/app-docker deploy
 # curl localhost
 Hello, blue from e648210be937
