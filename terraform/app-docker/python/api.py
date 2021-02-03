@@ -3,7 +3,7 @@ import os
 
 myhost = os.uname()[1]
 
-hello_target = os.environ.get('HELLO_TARGET', 'World')
+hello_target = os.environ.get('COLOR', 'World')
 
 GREETING = 'Hello, '+hello_target+' from '+myhost+'\n'
 
