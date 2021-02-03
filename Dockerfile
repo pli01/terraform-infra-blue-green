@@ -1,4 +1,4 @@
-FROM debian:latest
+FROM debian:stable
 # Build
 ARG MIRROR_DEBIAN
 ARG PYPI_URL
