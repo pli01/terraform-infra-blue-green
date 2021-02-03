@@ -28,6 +28,8 @@ build:
 install-cli:
 	@scripts/install-terraform.sh ${TF_BIN_VERSION}
 
+tf-version:
+	${DC} -f ${DC_TF_DOCKER_CLI} run --rm terraform -c 'terraform version'
 tf-validate:| check-var-PROJECT
 	${DC} -f ${DC_TF_DOCKER_CLI} run --rm terraform -c 'terraform validate ${PROJECT}'
 
