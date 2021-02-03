@@ -41,7 +41,7 @@ resource "docker_container" "api" {
     read_only      = true
   }
   command = ["python", "/usr/local/src/api.py"]
-  env     = ["HELLO_TARGET=${var.color}"]
+  env     = ["COLOR=${var.color}"]
   #  ports {
   #    internal = "9000"
   #    external = var.api_port + count.index

@@ -33,6 +33,29 @@ You can deploy and choose:
 * choose the blue or green image (ex: blue = python:2, green = python:3, or blue = myapp:v1, green = myapp:v2 etc)
 * you will find a terraform module ([terraform/app-docker/modules/api](terraform/app-docker/modules/api) which create lightweight abstractions of docker resources with parameters (color, count, image, param) to deploy the api stack
 
+
+In this example, to demonstrate the blue/green api and the switch between blue/green api on the reverseproxy/lb nginx, i use :
+
+* api containers,  simple WSGI HTTP server, [terraform/app-docker/python/api.py](terraform/app-docker/python/api.py) listening on port 9000, and replying "Hello, ${color} from ${hostname}"
+
+* a nginx web container with
+  + 2 env variables (COLOR and API_SERVER)
+  + dynamically replaced in a templated nginx configuration files [terraform/app-docker/nginx-conf.d/api.conf.template](terraform/app-docker/nginx-conf.d/api.conf.template)
+```
+upstream api-${COLOR} {
+    # generate a list of server:
+    # server name1:port; server name2:port;
+    ${API_SERVER}
+}
+
+server {
+    listen 80;
+    location / {
+            proxy_pass http://api-${COLOR};
+    }
+}
+
+```
 ### Inputs
 
 | Name | Description | Type | Default | Required |
@@ -57,6 +80,41 @@ You can deploy and choose:
 | green_api_name | Green API containers name list |
 | blue_api_ip | Blue API containers ip list |
 | green_api_ip | Green API containers ip list |
+
+### Test it
+* First run
+```
+# make PROJECT=terraform/app-docker init
+```
+* Deploy default blue (1 blue-api)
+```
+# make PROJECT=terraform/app-docker deploy
+# curl localhost
+Hello, blue from e648210be937
+```
+* Deploy and switch to green (1 green-api)
+```
+# export TF_VAR_color=green ;
+# make PROJECT=terraform/app-docker deploy
+# curl localhost
+Hello, green from fd2baa4f4758
+```
+* Deploy and switch to blue 
+```
+# unset TF_VAR_color ;
+# make PROJECT=terraform/app-docker deploy
+# curl localhost
+Hello, blue from e648210be937
+```
+* Deploy 2 blue container
+```
+# export TF_VAR_blue_api_count=2
+# make PROJECT=terraform/app-docker deploy
+# curl localhost
+Hello, blue from e648210be937
+# curl localhost
+Hello, blue from afd2315a1eec
+```
 
 ## Usage:
 
@@ -84,41 +142,6 @@ You can deploy and choose:
 * destroy: destroy app-project
 ```
   make PROJECT=terraform/app-docker destroy
-```
-
-## Test it
-* First run
-```
-# make PROJECT=terraform/app-docker init
-```
-* Deploy default blue (1 blue-api)
-```
-# make PROJECT=terraform/app-docker deploy
-# curl localhost
-Hello, blue from e648210be937
-```
-* Deploy green (1 green-api)
-```
-# export TF_VAR_color=green ;
-# make PROJECT=terraform/app-docker deploy
-# curl localhost
-Hello, green from fd2baa4f4758
-```
-* Deploy blue 
-```
-# unset TF_VAR_color ;
-# make PROJECT=terraform/app-docker deploy
-# curl localhost
-Hello, blue from e648210be937
-```
-* Deploy 2 blue container
-```
-# export TF_VAR_blue_api_count=2
-# make PROJECT=terraform/app-docker deploy
-# curl localhost
-Hello, blue from e648210be937
-# curl localhost
-Hello, blue from afd2315a1eec
 ```
 
 ## TODO:
