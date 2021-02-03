@@ -1,6 +1,8 @@
 SHELL = /bin/bash
 TF_LOG := # debug
 TF_BIN := $(shell type -p terraform)
+TF_BIN_VERSION :=
+
 TF_IN_AUTOMATION := # true
 TF_CLI_ARGS_init :=
 TF_CLI_ARGS_validate := 
@@ -23,6 +25,8 @@ all:
 #
 build:
 	${DC} -f ${DC_TF_DOCKER_CLI} build ${DC_BUILD_ARGS}
+install-cli:
+	@scripts/install-terraform.sh ${TF_BIN_VERSION}
 
 tf-validate:| check-var-PROJECT
 	${DC} -f ${DC_TF_DOCKER_CLI} run --rm terraform -c 'terraform validate ${PROJECT}'
