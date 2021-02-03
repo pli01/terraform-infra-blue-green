@@ -1,3 +1,4 @@
+bin
 terraform_
 .terraform*
 .tfstate*

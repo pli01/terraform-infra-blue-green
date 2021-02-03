@@ -1,17 +1,15 @@
 #!/bin/bash
+set -e
 
+TERRAFORM_VERSION=0.14.5
 echo "# build docker cli/terraform $TERRAFORM_VERSION"
 make build
 
-TERRAFORM_VERSION=0.14.5
-echo "# install terraform $TERRAFORM_VERSION"
-mkdir -p bin
-curl -s -O https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip \
-    && unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip -d bin/ \
-    && rm -rf terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+echo "# install local terraform $TERRAFORM_VERSION"
+scripts/install-terraform.sh $TERRAFORM_VERSION
 
 export TF_BIN=bin/terraform
-export PROJECT=terraform/app-docker
+export PROJECT=terraform-examples/app-docker
 export TF_IN_AUTOMATION=true
 
 echo "# init"
