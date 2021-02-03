@@ -1,4 +1,6 @@
 # terraform-infra-blue-green
+![CI](https://github.com/pli01/terraform-infra-blue-green/workflows/CI/badge.svg)
+
 Some examples on how to implement blue green with different stack and provider (docker, openstack)
 
 * app-docker: sample app, with one web nginx as reverseproxy/lb and blue/green api stack in backend
@@ -31,7 +33,7 @@ You can deploy and choose:
 * the blue or green color api. The web nginx reverseproxy will be connected to the one you choose
 * deploy 1 or N container in the blue or green stack (blue-api-1, blue-api-2...)
 * choose the blue or green image (ex: blue = python:2, green = python:3, or blue = myapp:v1, green = myapp:v2 etc)
-* you will find a terraform module ([terraform-examples/app-docker/modules/api](terraform-examples/app-docker/modules/api) which create lightweight abstractions of docker resources with parameters (color, count, image, param) to deploy the api stack
+* you will find a terraform module examples [terraform-examples/app-docker/modules/api](terraform-examples/app-docker/modules/api) which create lightweight abstractions of docker resources with parameters (color, count, image, param) to deploy the api stack
 
 
 In this example, to demonstrate the blue/green api and the switch between blue/green api on the reverseproxy/lb nginx, i use :

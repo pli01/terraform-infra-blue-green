@@ -17,5 +17,5 @@ services:
     tty: true
     stdin_open: true
     volumes:
-      - ./terraform:/terraform/terraform
+      - ./terraform-examples:/terraform/terraform-examples
       - ./Makefile:/terraform/Makefile
