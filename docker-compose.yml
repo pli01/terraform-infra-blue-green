@@ -18,3 +18,4 @@ services:
     stdin_open: true
     volumes:
       - ./terraform:/terraform/terraform
+      - ./Makefile:/terraform/Makefile
