@@ -42,14 +42,14 @@ tf-%:| check-var-PROJECT
 deploy: validate plan apply
 
 init:| check-var-PROJECT
-	${TF_BIN} init ${PROJECT}
+	${TF_BIN} -chdir=${PROJECT} init
 format:| check-var-PROJECT
-	${TF_BIN} fmt -check ${PROJECT} || ${TF_BIN} fmt -diff ${PROJECT}
+	${TF_BIN} -chdir=${PROJECT} fmt -check || ${TF_BIN} -chdir=${PROJECT} fmt -diff
 validate:| check-var-PROJECT
-	${TF_BIN} validate ${PROJECT}
+	${TF_BIN} -chdir=${PROJECT} validate
 plan:| check-var-PROJECT
-	${TF_BIN} plan ${PROJECT}
+	${TF_BIN} -chdir=${PROJECT} plan
 apply:| check-var-PROJECT
-	${TF_BIN} apply ${PROJECT}
+	${TF_BIN} -chdir=${PROJECT} apply
 destroy:| check-var-PROJECT
-	${TF_BIN} destroy ${PROJECT}
+	${TF_BIN} -chdir=${PROJECT} destroy
