@@ -37,6 +37,27 @@ grep "^AllowAgentForwarding yes" /etc/ssh/sshd_config || exit 1
 service ssh restart
 
 # config here
+apt-get install -qy --no-install-recommends python
 
-apt-get install -qy --no-install-recommends nginx
+cat > /home/debian/api.py <<EOF
+from wsgiref.simple_server import make_server
+import os
+
+myhost = os.uname()[1]
+
+app_port = int(os.environ.get('APP_PORT', 9000))
+hello_target = os.environ.get('COLOR', 'World')
+
+GREETING = 'Hello, '+hello_target+' from '+myhost+'\n'
+
+def hello(environ, start_response):
+	start_response('200 OK', [('Content-Type', 'text/plain')])
+	return [GREETING.encode("utf-8")]
+
+make_server('0.0.0.0', app_port, hello).serve_forever()
+EOF
+
+( cd /home/debian && nohup python /home/debian/api.py & )
+
+
 echo "## End post installation"
