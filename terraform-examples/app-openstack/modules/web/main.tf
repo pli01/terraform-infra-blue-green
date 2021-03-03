@@ -14,6 +14,8 @@ resource "openstack_orchestration_stack_v1" "web" {
     key_name        = var.key_name
     no_proxy        = var.no_proxy
     ssh_access_cidr = var.ssh_access_cidr
+    color           = var.color
+    api_server      = var.api_server
   }
   # override heat parameters with param files
   environment_opts = {

@@ -44,3 +44,11 @@ variable "ssh_access_cidr" {
   type    = string
   default = "0.0.0.0/0"
 }
+
+variable "color" {
+  type    = string
+}
+
+variable "api_server" {
+  type    = string
+}

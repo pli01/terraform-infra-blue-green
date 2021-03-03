@@ -73,13 +73,21 @@ parameters:
     label: no_proxy variable
     default: ""
 
+  api_server:
+    type: string
+    label: api_server
+    description: Comma separated list of api_server.
+    default: ""
+
+  color:
+    type: string
+    label: color variable
+    default: ""
+
 outputs:
   worker_id:
     description: worker id
     value: {get_resource: worker}
-  worker_net:
-    description: worker net
-    value: {get_param: worker_network}
   worker_private_ip_address:
     description: worker private ip address
     value: {get_attr: [worker, networks, {get_param: worker_network}, 0]}
@@ -152,6 +160,9 @@ resources:
       user_data_format: RAW
       user_data: {get_resource: postinstall_worker}
       user_data_update_policy: IGNORE
+      metadata:
+        api_server: { get_param: api_server }
+        color: { get_param: color }
 
   floating_ip:
     type: OS::Neutron::FloatingIPAssociation
@@ -174,6 +185,7 @@ resources:
     properties:
       cloud_config:
         merge_how: dict(recurse_array)+list(append)
+        final_message: "The instance is up, after $UPTIME seconds"
         write_files:
           - path: /home/debian/common_functions.sh
             permissions: 0700

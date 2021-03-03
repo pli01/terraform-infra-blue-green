@@ -1,3 +1,7 @@
+variable "fip" {
+  type    = string
+}
+
 variable "color" {
   description = "color"
 }

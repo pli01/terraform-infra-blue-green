@@ -59,8 +59,8 @@ variable "image" {
   default = "debian-latest"
 }
 variable "most_recent_image" {
-  default = "true"
-  # default = "false"
+  # default = "true"
+  default = "false"
 }
 #### NEUTRON
 variable "external_network" {

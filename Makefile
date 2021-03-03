@@ -54,3 +54,7 @@ apply:| check-var-PROJECT
 	${TF_BIN} -chdir=${PROJECT} apply
 destroy:| check-var-PROJECT
 	${TF_BIN} -chdir=${PROJECT} destroy
+output:| check-var-PROJECT
+	${TF_BIN} -chdir=${PROJECT} output
+show:| check-var-PROJECT
+	${TF_BIN} -chdir=${PROJECT} show

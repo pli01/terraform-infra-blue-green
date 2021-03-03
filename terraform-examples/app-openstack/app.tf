@@ -2,8 +2,8 @@ module "blue_api" {
   source          = "./modules/api"
   color        = "blue"
   prefix_name  = "api"
-  maxcount     = 1
-  # fip             = openstack_networking_floatingip_v2.web.id
+  maxcount     = var.blue_api_count
+  fip             = openstack_networking_floatingip_v2.blue_api.id
   network         = openstack_networking_network_v2.generic.id
   subnet          = openstack_networking_subnet_v2.http.id
   source_volid    = openstack_blockstorage_volume_v2.root_volume.id
@@ -18,8 +18,8 @@ module "green_api" {
   source          = "./modules/api"
   color        = "green"
   prefix_name  = "api"
-  maxcount     = 0
-  # fip             = openstack_networking_floatingip_v2.web.id
+  maxcount     = (local.is_blue ? 0 : var.green_api_count)
+  fip             = openstack_networking_floatingip_v2.green_api.id
   network         = openstack_networking_network_v2.generic.id
   subnet          = openstack_networking_subnet_v2.http.id
   source_volid    = openstack_blockstorage_volume_v2.root_volume.id

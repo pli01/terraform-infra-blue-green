@@ -5,6 +5,7 @@ resource "openstack_orchestration_stack_v1" "api" {
   name    = format("%s-%s-%s", var.color, var.prefix_name, count.index + 1)
   # override heat parameters
   parameters = {
+    floating_ip_id  = var.fip
     worker_network  = var.network
     worker_subnet   = var.subnet
     source_volid    = var.source_volid
