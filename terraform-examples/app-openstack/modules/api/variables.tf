@@ -1,5 +1,6 @@
 variable "fip" {
   type    = string
+  default = ""
 }
 
 variable "color" {

@@ -83,9 +83,9 @@ outputs:
   worker_private_ip_address:
     description: worker private ip address
     value: {get_attr: [worker, networks, {get_param: worker_network}, 0]}
-  worker_public_ip_address:
-    description: worker public ip address
-    value: {get_attr: [worker, networks, {get_param: worker_network}, 1]}
+#  worker_public_ip_address:
+#    description: worker public ip address
+#    value: {get_attr: [worker, networks, {get_param: worker_network}, 1]}
 ####  Debug worker object, tf outputs doesn t like this format
 #  worker_net_info:
 #    description: worker net info
@@ -135,12 +135,12 @@ resources:
       user_data: {get_resource: postinstall_worker}
       user_data_update_policy: IGNORE
 
-  floating_ip:
-    type: OS::Neutron::FloatingIPAssociation
-    depends_on: [worker]
-    properties:
-      floatingip_id: {get_param: floating_ip_id}
-      port_id: {get_resource: worker_port}
+#  floating_ip:
+#    type: OS::Neutron::FloatingIPAssociation
+#    depends_on: [worker]
+#    properties:
+#      floatingip_id: {get_param: floating_ip_id}
+#      port_id: {get_resource: worker_port}
 
   # user data post install script
   postinstall_worker:
