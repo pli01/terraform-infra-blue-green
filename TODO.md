@@ -1,5 +1,9 @@
 app-openstack
-* stack output tolist extract format:  (workaround: use blue/green dedicated fip and collect fixed_adress)
+* decte/retry when stack failed
+* use Resource Group (fix count instance) or AutoScaling Group (dynamic count instances) -> extract fixed private ip
+
++ stack output tolist extract format: 
+  FIXED: value = openstack_orchestration_stack_v1.api[*].outputs[1]["output_value"]
 
 ```
 web_stack_output = tolist([
@@ -20,7 +24,5 @@ web_stack_output = tolist([
   },
 ])
 
-* web stack update metadata to catch color and api_server param (old dirty fix with cron , curl metadata)
-* stack update behaviour, when volume id change du to image id change (most_recent = true...)
-* decte/retry when stack failed
-* use Resource Group (fix count instance) or AutoScaling Group (dynamic count instances) -> extract fixed private ip
++ web stack update metadata to catch color and api_server param (old dirty fix with cron , curl metadata)
++ stack update behaviour, when volume id change du to image id change (most_recent = true...)
