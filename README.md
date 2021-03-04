@@ -124,6 +124,19 @@ Hello, blue from e648210be937
 Hello, blue from afd2315a1eec
 ```
 
+
+## app-openstack example
+
+This example is described in [terraform-examples/app-openstack](terraform-examples/app-openstack) and will deploy the following components
+* web: nginx instance in a heat stack working as reverse proxy and lb (upstream backend to color blue or green api)
+* blue-api, green-api: python instance in a heat stack , listen on http 9000 port and reply, "hello "color", from 'hostname'"
+
+![app-docker blue/green](docs/tf-infra-blue-green-app-openstack.png)
+
+* This example demonstrate how to orchestrate openstack resources (network/subnet/fip/volume) and heat stack resources
+* Heat Stack and wait condition in instance: allow to launch instances in an ordered way and initiate a signal to heat when somethind append (end of installation, for example)
+* A sample environement file is provided as a model to register your own parameters (flavor, dns,...). Your file must be add to the make command
+
 ## Usage:
 
 * build: build cli/terraform image with downloaded providers. This image can be use offline
