@@ -5,6 +5,7 @@ resource "openstack_orchestration_stack_v1" "web" {
   # override heat parameters
   parameters = {
     floating_ip_id  = var.fip
+    security_group  = var.security_group
     worker_network  = var.network
     worker_subnet   = var.subnet
     source_volid    = var.source_volid

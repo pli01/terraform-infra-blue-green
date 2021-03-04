@@ -22,6 +22,11 @@ variable "source_volid" {
   type    = string
 }
 
+variable "security_group" {
+  type    = string
+}
+
+
 #### GLANCE
 variable "image" {
   type    = string

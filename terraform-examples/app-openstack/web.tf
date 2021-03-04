@@ -13,6 +13,7 @@ module "web" {
   network         = openstack_networking_network_v2.generic.id
   subnet          = openstack_networking_subnet_v2.http.id
   source_volid    = openstack_blockstorage_volume_v2.root_volume.id
+  security_group  = openstack_networking_secgroup_v2.web_secgroup_1.id
   vol_type        = var.vol_type
   flavor          = var.flavor
   image           = var.image
