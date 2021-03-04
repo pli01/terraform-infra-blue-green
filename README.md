@@ -152,6 +152,10 @@ Hello, blue from afd2315a1eec
 ```
   make PROJECT=terraform-examples/app-docker TF_BIN=./terraform_0.14.5 deploy
 ```
+* deploy with alternative configuration var file
+```
+  make PROJECT=terraform-examples/app-docker TF_BIN=bin/terraform TF_VAR_FILE="-var-file=$(pwd)/config.auto.tfvars" deploy
+```
 * destroy: destroy app-project
 ```
   make PROJECT=terraform-examples/app-docker destroy

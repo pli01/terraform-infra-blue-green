@@ -3,12 +3,13 @@ TF_LOG := # debug
 TF_BIN := $(shell type -p terraform)
 TF_BIN_VERSION :=
 
+TF_VAR_FILE := # -var-file=$(pwd)/config.auto.tfvars
 TF_IN_AUTOMATION := # true
 TF_CLI_ARGS_init :=
 TF_CLI_ARGS_validate := 
-TF_CLI_ARGS_plan    := 
-TF_CLI_ARGS_apply   := -auto-approve
-TF_CLI_ARGS_destroy := -auto-approve
+TF_CLI_ARGS_plan    := ${TF_VAR_FILE}
+TF_CLI_ARGS_apply   := ${TF_VAR_FILE} -auto-approve
+TF_CLI_ARGS_destroy := ${TF_VAR_FILE} -auto-approve
 
 DC       := $(shell type -p docker-compose)
 DC_BUILD_ARGS := --pull --no-cache --force-rm
@@ -42,14 +43,18 @@ tf-%:| check-var-PROJECT
 deploy: validate plan apply
 
 init:| check-var-PROJECT
-	${TF_BIN} init ${PROJECT}
+	${TF_BIN} -chdir=${PROJECT} init
 format:| check-var-PROJECT
-	${TF_BIN} fmt -check ${PROJECT} || ${TF_BIN} fmt -diff ${PROJECT}
+	${TF_BIN} -chdir=${PROJECT} fmt -check || ${TF_BIN} -chdir=${PROJECT} fmt -diff
 validate:| check-var-PROJECT
-	${TF_BIN} validate ${PROJECT}
+	${TF_BIN} -chdir=${PROJECT} validate
 plan:| check-var-PROJECT
-	${TF_BIN} plan ${PROJECT}
+	${TF_BIN} -chdir=${PROJECT} plan
 apply:| check-var-PROJECT
-	${TF_BIN} apply ${PROJECT}
+	${TF_BIN} -chdir=${PROJECT} apply
 destroy:| check-var-PROJECT
-	${TF_BIN} destroy ${PROJECT}
+	${TF_BIN} -chdir=${PROJECT} destroy
+output:| check-var-PROJECT
+	${TF_BIN} -chdir=${PROJECT} output
+show:| check-var-PROJECT
+	${TF_BIN} -chdir=${PROJECT} show

@@ -1,0 +1,220 @@
+heat_template_version: 2015-10-15
+
+description: Create a simple instance
+
+parameters:
+  key_name:
+    type: string
+    label: Name of keypair to assign to servers
+    description: key_name=foo
+    constraints:
+      - {custom_constraint: nova.keypair}
+
+  floating_ip_id:
+    type: string
+    label: The Floating id
+    description: floating_ip_id=
+
+  source_volid:
+    type: string
+
+  worker_network:
+    type: string
+    constraints:
+      - {custom_constraint: neutron.network}
+  worker_subnet:
+    type: string
+    constraints:
+      - {custom_constraint: neutron.subnet}
+
+  worker_subnet_cidr:
+    type: string
+    default: "192.168.1.0/24"
+  ssh_access_cidr:
+    type: string
+    label: IP range that is permitted to SSH to worker instance
+    description: >
+       The CIDR IP range that is permitted to SSH to worker instance.
+       Note - a value of 0.0.0.0/0 will allow access from ANY IP address.
+    default: "192.168.2.2/32"
+    constraints:
+      - {custom_constraint: net_cidr}
+
+  worker_flavor:
+    type: string
+    label: The flavor for worker Instances
+    description: flavor=small
+    constraints:
+      - {custom_constraint: nova.flavor}
+  worker_image:
+    type: string
+    label: The debian worker_image based for instance
+    description: worker_image=debian-8-latest
+    default: debian-8-latest
+    constraints:
+      - {custom_constraint: glance.image}
+  worker_vol_type:
+    type: string
+    description: The volume type of the Cinder volume for instance
+    default: default
+
+  wait_condition_timeout:
+    type: number
+    default: 1200
+    description: timeout for the Wait Conditions
+  ssh_authorized_keys:
+    type: comma_delimited_list
+    label: ssh_authorized_keys
+    description: Comma separated list of keypair.
+    default: []
+
+  no_proxy:
+    type: string
+    label: no_proxy variable
+    default: ""
+
+  api_server:
+    type: string
+    label: api_server
+    description: Comma separated list of api_server.
+    default: ""
+
+  color:
+    type: string
+    label: color variable
+    default: ""
+
+outputs:
+  worker_id:
+    description: worker id
+    value: {get_resource: worker}
+  worker_private_ip_address:
+    description: worker private ip address
+    value: {get_attr: [worker, networks, {get_param: worker_network}, 0]}
+  worker_public_ip_address:
+    description: worker public ip address
+    value: {get_attr: [worker, networks, {get_param: worker_network}, 1]}
+####  Debug worker object, tf outputs doesn t like this format
+#  worker_net_info:
+#    description: worker net info
+#    value:
+#      get_attr: [worker, networks]
+
+resources:
+  # Provide a curl CLI command to the cloud-init script.  Called on completion
+  # to indicate the status of the cloud-init process
+  wait_handle:
+    type: OS::Heat::WaitConditionHandle
+
+  # Wait for the node_boot (cloud-init) process to complete or time out
+  wait_condition:
+    type: OS::Heat::WaitCondition
+    properties:
+      handle: {get_resource: wait_handle}
+      timeout: {get_param: wait_condition_timeout}
+
+  worker_port:
+    type: OS::Neutron::Port
+    properties:
+      network: {get_param: worker_network}
+      security_groups:
+        - {get_resource: worker_node_securitygroup}
+      fixed_ips:
+        - subnet_id: {get_param: worker_subnet}
+
+  worker_node_securitygroup:
+    type: OS::Neutron::SecurityGroup
+    properties:
+      rules:
+        - protocol: tcp
+          remote_ip_prefix: {get_param: ssh_access_cidr}
+          port_range_min: 22
+          port_range_max: 22
+        - protocol: tcp
+          remote_ip_prefix: {get_param: worker_subnet_cidr}
+          port_range_min: 22
+          port_range_max: 22
+        - protocol: tcp
+          remote_ip_prefix: 0.0.0.0/0
+          port_range_min: 80
+          port_range_max: 80
+
+  # worker compute
+  worker_vol:
+    type: OS::Cinder::Volume
+    properties:
+      volume_type: {get_param: worker_vol_type}
+      source_volid: {get_param: source_volid}
+
+  worker:
+    type: OS::Nova::Server
+    properties:
+      flavor: {get_param: worker_flavor}
+      key_name: {get_param: key_name}
+      networks:
+        - port: {get_resource: worker_port}
+      block_device_mapping:
+        - device_name: vda
+          volume_id: {get_resource: worker_vol}
+          delete_on_termination: true
+      user_data_format: RAW
+      user_data: {get_resource: postinstall_worker}
+      user_data_update_policy: IGNORE
+      metadata:
+        api_server: { get_param: api_server }
+        color: { get_param: color }
+
+  floating_ip:
+    type: OS::Neutron::FloatingIPAssociation
+    depends_on: [worker]
+    properties:
+      floatingip_id: {get_param: floating_ip_id}
+      port_id: {get_resource: worker_port}
+
+  # user data post install script
+  postinstall_worker:
+    type: "OS::Heat::MultipartMime"
+    properties:
+      parts:
+        - config: {get_resource: included_files}
+        - config: {get_resource: worker_postconf}
+        - config: {get_resource: finish_postinstall}
+
+  included_files:
+    type: "OS::Heat::CloudConfig"
+    properties:
+      cloud_config:
+        merge_how: dict(recurse_array)+list(append)
+        final_message: "The instance is up, after $UPTIME seconds"
+        write_files:
+          - path: /home/debian/common_functions.sh
+            permissions: 0700
+            content:
+              str_replace:
+                template:
+                  get_file: heat/config-scripts/common_functions.sh
+                params:
+                  $wc_notify: {get_attr: [wait_handle, curl_cli]}
+
+  worker_postconf:
+    type: "OS::Heat::SoftwareConfig"
+    properties:
+      group: ungrouped
+      config:
+        str_replace:
+          template:
+            get_file: heat/config-scripts/worker_postconf.sh
+          params:
+            $ssh_authorized_keys: {get_param: ssh_authorized_keys}
+            $no_proxy: {get_param: no_proxy}
+
+  finish_postinstall:
+    type: "OS::Heat::SoftwareConfig"
+    properties:
+      group: ungrouped
+      config:
+        str_replace:
+          template:
+            get_file: heat/config-scripts/finish_postinstall.sh
+          params:
+            $no_proxy: {get_param: no_proxy}
