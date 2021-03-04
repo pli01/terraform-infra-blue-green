@@ -3,12 +3,28 @@ output "color" {
   description = "color"
   value       = var.color
 }
+locals {
+ blue_private_ip = flatten(module.blue_api[*].private_ip)
+ blue_public_ip = flatten(module.blue_api[*].public_ip)
+}
 ### outputs
-output "api_stack" {
-  value = module.blue_api[*].stack
+output "api_stack_private_ip" {
+  value = local.active_server_ip
   depends_on = [
-    module.blue_api
-    #openstack_orchestration_stack_v1.web
+    local.blue_private_ip
+  ]
+}
+
+output "blue_api_stack_private_ip" {
+  value = local.blue_private_ip
+  depends_on = [
+    local.blue_private_ip
+  ]
+}
+output "blue_api_stack_public_ip" {
+  value = local.blue_public_ip
+  depends_on = [
+    local.blue_public_ip
   ]
 }
 
@@ -28,3 +44,4 @@ output "api_stack_output" {
     #openstack_orchestration_stack_v1.web
   ]
 }
+
