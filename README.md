@@ -3,13 +3,15 @@
 
 Some examples on how to implement blue green with different stack and provider (docker, openstack)
 
-* app-docker: sample app, with one web nginx as reverseproxy/lb and blue/green api stack in backend
-* TODO: app-openstack
+* app-docker: sample app with docker container, with one web nginx as reverseproxy/lb and blue/green api container in backend
+* app-openstack: sample app with openstack and heat stack, with one web nginx stack as reverseproxy/lb and blue/green api stack in backend
 
 ## Content of this repo
 
 * terraform dir:
-  + [terraform-examples/app-docker](terraform-examples/app-docker): web nginx as lb and blue green api
+  + [terraform-examples/app-docker](terraform-examples/app-docker): web nginx as lb and blue green api (with container)
+  + [terraform-examples/app-openstack](terraform-examples/app-openstack): web nginx as lb and blue green api (with openstack instance and heat stack)
+
 * Makefile: to launch terraform cli with options and vars
 
 * terraform cli in docker image: everything we need in one place, no matter who s running it or where. Useful for CI/CD
