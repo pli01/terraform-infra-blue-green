@@ -26,3 +26,6 @@ web_stack_output = tolist([
 
 + web stack update metadata to catch color and api_server param (old dirty fix with cron , curl metadata)
 + stack update behaviour, when volume id change du to image id change (most_recent = true...)
+
+Terragrunt, dependency, dependencies
+https://terragrunt.gruntwork.io/docs/features/execute-terraform-commands-on-multiple-modules-at-once/
