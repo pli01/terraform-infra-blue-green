@@ -20,7 +20,6 @@ variable "color" {
     condition     = can(regex("^(blue|green)$", var.color))
     error_message = "The color value must be \"blue\" or \"green\". Default: \"blue\"."
   }
-
 }
 
 variable "web_port" {
@@ -74,9 +73,16 @@ data "docker_registry_image" "web" {
 }
 
 resource "docker_image" "web" {
-  keep_locally  = true
-  name          = data.docker_registry_image.web.name
-  pull_triggers = [data.docker_registry_image.web.sha256_digest]
+#  keep_locally  = true
+#  name          = data.docker_registry_image.web.name
+#  pull_triggers = [data.docker_registry_image.web.sha256_digest]
+  name          = "build-web"
+  force_remove = true
+  build {
+    path      = abspath("${path.module}/nginx")
+    dockerfile = "Dockerfile"
+    remove = true
+  }
 }
 
 # create web container
@@ -92,15 +98,15 @@ resource "docker_container" "web" {
     internal = "80"
     external = var.web_port + count.index
   }
-  volumes {
-    host_path      = abspath("${path.module}/nginx-conf.d/api.conf.template")
-    container_path = "/etc/nginx/templates/default.conf.template"
-    read_only      = true
-  }
   env = [
     "COLOR=${var.color}",
     format("API_SERVER=%s", join(" ", formatlist("%s %s:%s;", "server", flatten(local.active_server_name), var.api_port))),
   ]
+#  volumes {
+#    host_path      = abspath("${path.module}/nginx-conf.d/api.conf.template")
+#    container_path = "/etc/nginx/templates/default.conf.template"
+#    read_only      = true
+#  }
 }
 
 locals {

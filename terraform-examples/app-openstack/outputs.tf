@@ -4,8 +4,8 @@ output "color" {
   value       = var.color
 }
 locals {
- blue_private_ip = flatten(module.blue_api[*].private_ip)
- blue_public_ip = flatten(module.blue_api[*].public_ip)
+  blue_private_ip = flatten(module.blue_api[*].private_ip)
+  blue_public_ip  = flatten(module.blue_api[*].public_ip)
 }
 ### outputs
 output "api_stack_private_ip" {

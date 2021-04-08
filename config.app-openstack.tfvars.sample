@@ -1,9 +1,12 @@
 # Params file for openstack heat variables
-dns_ip           = ["10.1.1.1", "10.2.2.2"]
-external_network = "ext-net"
-image            = "debian9-latest"
-flavor           = "standard-2.2"
-vol_size         = 10
-vol_type         = "default"
-key_name         = "debian"
-no_proxy         = ".my.cloud"
+dns_ip=["10.1.1.1", "10.2.2.2"]
+external_network="ext-net"
+image="debian9-latest"
+flavor="standard-2.2"
+vol_size=10
+vol_type="default"
+key_name="debian"
+no_proxy=".my.cloud"
+# color = "green"
+# blue_api_count = 2
+# green_api_count = 2

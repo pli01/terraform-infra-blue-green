@@ -26,13 +26,19 @@ function test_app {
   return $ret
 }
 
-export TF_BIN=bin/terraform
 export PROJECT=terraform-examples/app-docker
 export TF_IN_AUTOMATION=true
 TERRAFORM_VERSION=0.14.5
 echo "# build docker cli/terraform $TERRAFORM_VERSION"
 make build
 make tf-version
+
+echo "# docker cli/terraform : $PROJECT: deploy default (blue)"
+make  PROJECT=$PROJECT DC_TF_ENV=" -f docker-compose.app-docker.yml" deploy
+test_app
+make  PROJECT=$PROJECT DC_TF_ENV=" -f docker-compose.app-docker.yml" destroy
+
+export TF_BIN=bin/terraform
 
 echo "# install local terraform cli $TERRAFORM_VERSION"
 make install-cli TF_BIN_VERSION=$TERRAFORM_VERSION

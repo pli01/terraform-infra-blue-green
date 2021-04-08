@@ -1,4 +1,4 @@
-FROM debian:stable
+FROM debian:buster
 # Build
 ARG MIRROR_DEBIAN
 ARG PYPI_URL
