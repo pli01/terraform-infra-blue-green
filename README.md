@@ -131,7 +131,7 @@ This example is described in [terraform-examples/app-openstack](terraform-exampl
 * web: nginx instance in a heat stack working as reverse proxy and lb (upstream backend to color blue or green api)
 * blue-api, green-api: python instance in a heat stack , listen on http 9000 port and reply, "hello "color", from 'hostname'"
 
-![app-docker blue/green](docs/tf-infra-blue-green-app-openstack.png)
+![app-docker blue/green](docs/tf-blue-green-app-openstack.png)
 
 * This example demonstrate how to orchestrate openstack resources (network/subnet/fip/volume) and heat stack resources
 * Heat Stack and wait condition in instance: allow to launch instances in an ordered way and initiate a signal to heat when somethind append (end of installation, for example)
