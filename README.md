@@ -44,7 +44,7 @@ In this example, to demonstrate the blue/green api and the switch between blue/g
 
 * a nginx web container with
   + 2 env variables (COLOR and API_SERVER)
-  + dynamically replaced in a templated nginx configuration files [terraform-examples/app-docker/nginx-conf.d/api.conf.template](terraform-examples/app-docker/nginx-conf.d/api.conf.template)
+  + dynamically replaced in a templated nginx configuration files [terraform-examples/app-docker/nginx/api.conf.template](terraform-examples/app-docker/nginx/api.conf.template)
 ```
 upstream api-${COLOR} {
     # generate a list of server:
