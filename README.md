@@ -180,7 +180,7 @@ This example is described in [terraform-examples/app-openstack](terraform-exampl
 * plan (with terraform docker cli)
 ```
 time make PROJECT="terraform-examples/app-docker" DC_TF_ENV=" -f docker-compose.app-docker.yml" tf-plan
-```
+
 time make PROJECT="terraform-examples/app-openstack" tf-plan
 ```
 * With terraform docker cli, you can pass the config.vars in the container with TF_VAR_FILE and override docker-compose file to mount this file in the container
@@ -189,8 +189,7 @@ time make PROJECT="terraform-examples/app-openstack" tf-plan
   dns_ip=["10.1.1.1", "10.2.2.2"]
   external_network="ext-net"
   color="green"
-```
-```
+  # end file
   make PROJECT="terraform-examples/app-openstack" TF_VAR_FILE="-var-file=/terraform/config.auto.tfvars" DC_TF_ENV=" -f docker-compose.app-openstack.yml" tf-deploy
 ```
 
@@ -200,8 +199,7 @@ time make PROJECT="terraform-examples/app-openstack" tf-plan
   TF_VAR_dns_ip=["10.228.245.129","10.228.245.130"]
   TF_VAR_external_network=ext-net-z1
   TF_VAR_color=green
-```
-```
+
   make PROJECT="terraform-examples/app-openstack" DC_TF_ENV=" -f docker-compose.app-openstack.yml" tf-deploy
 ```
 
