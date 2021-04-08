@@ -34,6 +34,11 @@ echo "# build docker cli/terraform $TERRAFORM_VERSION"
 make build
 make tf-version
 
+echo "# docker cli/terraform : $PROJECT: deploy default (blue)"
+make  PROJECT=$PROJECT DC_TF_ENV=" -f docker-compose.app-docker.yml" deploy
+test_app
+make  PROJECT=$PROJECT DC_TF_ENV=" -f docker-compose.app-docker.yml" destroy
+
 echo "# install local terraform cli $TERRAFORM_VERSION"
 make install-cli TF_BIN_VERSION=$TERRAFORM_VERSION
 
