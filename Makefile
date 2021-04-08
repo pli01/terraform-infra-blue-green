@@ -17,8 +17,12 @@ TF_CLI_ARGS_destroy := ${TF_VAR_FILE} -auto-approve
 DC       := $(shell type -p docker-compose)
 DC_BUILD_ARGS := --pull --no-cache --force-rm
 DC_TF_DOCKER_CLI := docker-compose.yml
-DC_TF_ENV := -f docker-compose.test.yml
+DC_TF_ENV :=  #-f docker-compose.test.yml
 DC_RUN_ARGS := -T
+
+# extract PROJECT_BASENAME from PROJECT to source docker env file
+PROJECT_BASENAME=$(shell basename ${PROJECT} 2>&-  ||true)
+dummy_cnf := $(shell touch $(PROJECT_BASENAME).env )
 export
 
 check-var-%:
@@ -26,6 +30,8 @@ check-var-%:
 
 all:
 	@echo "Usage: make PROJECT='myapp' build | deploy | destroy"
+debug:
+	@echo "${PROJECT} ${PROJECT_BASENAME}"
 #
 # terraform build ci tool
 #
@@ -42,12 +48,14 @@ tf-version:
 #	${DC} -f ${DC_TF_DOCKER_CLI} run --rm terraform -c 'terraform validate ${PROJECT}'
 
 tf-%:| check-var-PROJECT
+	@echo "# start"
 	${DC} -f ${DC_TF_DOCKER_CLI} ${DC_TF_ENV} run ${DC_RUN_ARGS} --rm terraform -c 'make PROJECT=${PROJECT} $*'
+	@echo "# end"
 
 #
 # terraform deploy
 #
-deploy: validate plan apply
+deploy: init validate plan apply
 
 init:| check-var-PROJECT
 	${TF_BIN} -chdir=${PROJECT} init

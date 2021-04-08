@@ -21,9 +21,17 @@ data "docker_registry_image" "api_image" {
 }
 
 resource "docker_image" "api_image" {
-  keep_locally  = true
-  name          = data.docker_registry_image.api_image.name
-  pull_triggers = [data.docker_registry_image.api_image.sha256_digest]
+  #keep_locally  = true
+  #name          = data.docker_registry_image.api_image.name
+  #pull_triggers = [data.docker_registry_image.api_image.sha256_digest]
+
+  name          = "build-api"
+  force_remove = true
+  build {
+    path      = abspath("${path.module}/../../python")
+    dockerfile = "Dockerfile"
+    remove = true
+  }
 }
 
 # create api container
@@ -31,17 +39,19 @@ resource "docker_container" "api" {
   count   = var.maxcount
   name    = format("%s-%s-%s", var.color, var.prefix_name, count.index + 1)
   image   = docker_image.api_image.latest
-  restart = "always"
+  restart = "unless-stopped"
   networks_advanced {
     name = var.network_name
   }
-  volumes {
-    host_path      = abspath("${path.module}/../../python/api.py")
-    container_path = "/usr/local/src/api.py"
-    read_only      = true
-  }
-  command = ["python", "/usr/local/src/api.py"]
-  env     = ["COLOR=${var.color}"]
+  env     = [
+     "COLOR=${var.color}",
+      ]
+#  volumes {
+#    host_path      = abspath("${path.module}/../../python/api.py")
+#    container_path = "/usr/local/src/api.py"
+#    read_only      = true
+#  }
+#  command = ["python","/usr/local/src/api.py"]
   #  ports {
   #    internal = "9000"
   #    external = var.api_port + count.index
