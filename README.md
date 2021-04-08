@@ -44,7 +44,7 @@ In this example, to demonstrate the blue/green api and the switch between blue/g
 
 * a nginx web container with
   + 2 env variables (COLOR and API_SERVER)
-  + dynamically replaced in a templated nginx configuration files [terraform-examples/app-docker/nginx-conf.d/api.conf.template](terraform-examples/app-docker/nginx-conf.d/api.conf.template)
+  + dynamically replaced in a templated nginx configuration files [terraform-examples/app-docker/nginx/api.conf.template](terraform-examples/app-docker/nginx/api.conf.template)
 ```
 upstream api-${COLOR} {
     # generate a list of server:
@@ -131,7 +131,7 @@ This example is described in [terraform-examples/app-openstack](terraform-exampl
 * web: nginx instance in a heat stack working as reverse proxy and lb (upstream backend to color blue or green api)
 * blue-api, green-api: python instance in a heat stack , listen on http 9000 port and reply, "hello "color", from 'hostname'"
 
-![app-docker blue/green](docs/tf-infra-blue-green-app-openstack.png)
+![app-docker blue/green](docs/tf-blue-green-app-openstack.png)
 
 * This example demonstrate how to orchestrate openstack resources (network/subnet/fip/volume) and heat stack resources
 * Heat Stack and wait condition in instance: allow to launch instances in an ordered way and initiate a signal to heat when somethind append (end of installation, for example)
@@ -180,7 +180,7 @@ This example is described in [terraform-examples/app-openstack](terraform-exampl
 * plan (with terraform docker cli)
 ```
 time make PROJECT="terraform-examples/app-docker" DC_TF_ENV=" -f docker-compose.app-docker.yml" tf-plan
-```
+
 time make PROJECT="terraform-examples/app-openstack" tf-plan
 ```
 * With terraform docker cli, you can pass the config.vars in the container with TF_VAR_FILE and override docker-compose file to mount this file in the container
@@ -189,8 +189,7 @@ time make PROJECT="terraform-examples/app-openstack" tf-plan
   dns_ip=["10.1.1.1", "10.2.2.2"]
   external_network="ext-net"
   color="green"
-```
-```
+  # end file
   make PROJECT="terraform-examples/app-openstack" TF_VAR_FILE="-var-file=/terraform/config.auto.tfvars" DC_TF_ENV=" -f docker-compose.app-openstack.yml" tf-deploy
 ```
 
@@ -200,8 +199,7 @@ time make PROJECT="terraform-examples/app-openstack" tf-plan
   TF_VAR_dns_ip=["10.228.245.129","10.228.245.130"]
   TF_VAR_external_network=ext-net-z1
   TF_VAR_color=green
-```
-```
+
   make PROJECT="terraform-examples/app-openstack" DC_TF_ENV=" -f docker-compose.app-openstack.yml" tf-deploy
 ```
 
