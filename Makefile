@@ -57,7 +57,7 @@ validate:| check-var-PROJECT init
 	${TF_BIN} -chdir=${PROJECT} validate
 plan:| check-var-PROJECT init
 	${TF_BIN} -chdir=${PROJECT} plan
-apply:| check-var-PROJECT init
+apply:| check-var-PROJECT plan
 	${TF_BIN} -chdir=${PROJECT} apply
 destroy:| check-var-PROJECT init
 	${TF_BIN} -chdir=${PROJECT} destroy
