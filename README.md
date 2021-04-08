@@ -135,14 +135,11 @@ This example is described in [terraform-examples/app-openstack](terraform-exampl
 
 * This example demonstrate how to orchestrate openstack resources (network/subnet/fip/volume) and heat stack resources
 * Heat Stack and wait condition in instance: allow to launch instances in an ordered way and initiate a signal to heat when somethind append (end of installation, for example)
-* A sample environement file is provided as a model to register your own parameters (flavor, dns,...). Your file must be add to the make command
+* A sample config/envirnement file is provided as a model to register your own parameters (flavor, dns,...). Your file must be added to the make command
 
 ## Usage:
 
-* build: build cli/terraform image with downloaded providers. This image can be use offline
-```
-  make build
-```
+### use terraform cli
 * install-cli: install cli/terraform in bin/ dir 
 ```
   # install latest terraform cli
@@ -175,6 +172,39 @@ This example is described in [terraform-examples/app-openstack](terraform-exampl
 ```
   make PROJECT=terraform-examples/app-docker destroy
 ```
+### use terraform cli in docker
+* build: build docker cli/terraform image with downloaded providers. This image can be use offline with docker-compose (use make target tf-XX)
+```
+  make build
+``` 
+* plan (with terraform docker cli)
+```
+time make PROJECT="terraform-examples/app-docker" DC_TF_ENV=" -f docker-compose.app-docker.yml" tf-plan
+```
+time make PROJECT="terraform-examples/app-openstack" tf-plan
+```
+* With terraform docker cli, you can pass the config.vars in the container with TF_VAR_FILE and override docker-compose file to mount this file in the container
+```
+  # cat config.auto.tfvars
+  dns_ip=["10.1.1.1", "10.2.2.2"]
+  external_network="ext-net"
+  color="green"
+```
+```
+  make PROJECT="terraform-examples/app-openstack" TF_VAR_FILE="-var-file=/terraform/config.auto.tfvars" DC_TF_ENV=" -f docker-compose.app-openstack.yml" tf-deploy
+```
+
+* or With terraform docker cli, you can convert the tf config.vars in a TF_VAR_variable file, named as "app-openstack.env". This file is automatically loaded with docker-compose if present
+```
+  # cat app-openstack.env (no quote around values)
+  TF_VAR_dns_ip=["10.228.245.129","10.228.245.130"]
+  TF_VAR_external_network=ext-net-z1
+  TF_VAR_color=green
+```
+```
+  make PROJECT="terraform-examples/app-openstack" DC_TF_ENV=" -f docker-compose.app-openstack.yml" tf-deploy
+```
+
 
 ## TODO:
 * environment files
