@@ -12,19 +12,19 @@ resource "openstack_orchestration_stack_v1" "api" {
     source_volid    = var.source_volid
     worker_vol_type = var.vol_type
     worker_flavor   = var.flavor
-    worker_image    = var.image
     key_name        = var.key_name
-    no_proxy        = var.no_proxy
-    ssh_access_cidr = var.ssh_access_cidr
+    affinity_group  = var.affinity_group
+    user_data       = var.user_data
   }
   # override heat parameters with param files
   environment_opts = {
     Bin = "\n"
-    # Bin = file("heat/api-param.yml")
+    #Bin = file("${path.module}/../../heat/env.yaml")
   }
   # define heat file
   template_opts = {
-    Bin = file("${path.module}/../../heat/api.yml")
+    #Bin = file("${path.module}/../../heat/api-rg.yaml")
+    Bin = file("${path.module}/../../heat/api.yaml")
   }
   disable_rollback = true
   #  disable_rollback = false

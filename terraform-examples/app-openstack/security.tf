@@ -61,11 +61,12 @@ resource "openstack_networking_secgroup_rule_v2" "ssh_http_api_secgroup_rule_1" 
 }
 
 resource "openstack_networking_secgroup_rule_v2" "api_secgroup_rule_1" {
-  direction         = "ingress"
-  ethertype         = "IPv4"
-  protocol          = "tcp"
-  port_range_min    = 9000
-  port_range_max    = 9000
-  remote_ip_prefix  = "0.0.0.0/0"
+  direction      = "ingress"
+  ethertype      = "IPv4"
+  protocol       = "tcp"
+  port_range_min = 9000
+  port_range_max = 9000
+  #remote_ip_prefix  = "0.0.0.0/0"
+  remote_ip_prefix  = var.network_http["cidr"]
   security_group_id = openstack_networking_secgroup_v2.api_secgroup_1.id
 }

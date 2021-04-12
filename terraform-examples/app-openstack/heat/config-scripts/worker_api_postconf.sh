@@ -3,12 +3,13 @@ echo "# RUNNING: $(dirname $0)/$(basename $0)"
 set -xe -o pipefail
 function clean() {
 	ret=$?
-	[ "$ret" -gt 0 ] && notify_failure "Deploy $0: $?"
+	[ "$ret" -gt 0 ] && notify_status FAILURE "Deploy $0: $?"
 	exit $ret
 }
 trap clean EXIT QUIT KILL
 
 libdir=/home/debian
+[ -f ${libdir}/config.cfg ] && source ${libdir}/config.cfg
 [ -f ${libdir}/common_functions.sh ] && source ${libdir}/common_functions.sh
 
 # Install minimal package
@@ -20,7 +21,7 @@ apt-get install -qy --no-install-recommends $PACKAGE_CUSTOM
 echo "## add authorized_keys"
 HOME=/home/debian
 if [ ! -d $HOME/.ssh ] ; then mkdir -p $HOME/.ssh ; fi
-echo '$ssh_authorized_keys' |  jq -r ".[]" >> $HOME/.ssh/authorized_keys
+echo "$ssh_authorized_keys" |  jq -r ".[]" >> $HOME/.ssh/authorized_keys
 chown debian. -R $HOME/.ssh
 HOME=/root
 

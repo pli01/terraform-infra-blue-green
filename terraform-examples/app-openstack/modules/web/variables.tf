@@ -40,20 +40,14 @@ variable "flavor" {
 }
 
 #### Variable used in heat and cloud-init
-variable "no_proxy" {
-  type    = string
-  default = "localhost"
-}
-
-variable "ssh_access_cidr" {
-  type    = string
-  default = "0.0.0.0/0"
-}
-
 variable "color" {
   type    = string
 }
 
 variable "api_server" {
+  type    = string
+}
+
+variable "user_data" {
   type    = string
 }

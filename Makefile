@@ -3,6 +3,7 @@ SHELL = /bin/bash
 TF_LOG ?= # debug
 TF_BIN ?= $(shell type -p terraform)
 TF_BIN_VERSION :=
+TAINT_ADDRESS :=
 
 TF_VAR_FILE ?= # -var-file=$(pwd)/config.auto.tfvars
 TF_DATA_DIR ?=
@@ -73,3 +74,5 @@ output:| check-var-PROJECT init
 	${TF_BIN} -chdir=${PROJECT} output
 show:| check-var-PROJECT init
 	${TF_BIN} -chdir=${PROJECT} show
+taint:| check-var-PROJECT init
+	${TF_BIN} -chdir=${PROJECT} taint ${TAINT_ADDRESS}
