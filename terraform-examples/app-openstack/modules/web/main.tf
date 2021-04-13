@@ -11,23 +11,21 @@ resource "openstack_orchestration_stack_v1" "web" {
     source_volid    = var.source_volid
     worker_vol_type = var.vol_type
     worker_flavor   = var.flavor
-    worker_image    = var.image
     key_name        = var.key_name
-    no_proxy        = var.no_proxy
-    ssh_access_cidr = var.ssh_access_cidr
     color           = var.color
     api_server      = var.api_server
+    user_data       = var.user_data
   }
   # override heat parameters with param files
   environment_opts = {
     Bin = "\n"
-    # Bin = file("heat/web-param.yml")
+    # Bin = file("heat/web-param.yaml")
   }
   # define heat file
   template_opts = {
-    Bin = file("${path.module}/../../heat/web.yml")
-    # Bin = file("${path.root}/heat/web.yml")
-    #Bin = file("${path.cwd}/heat/web.yml")
+    Bin = file("${path.module}/../../heat/web.yaml")
+    # Bin = file("${path.root}/heat/web.yaml")
+    #Bin = file("${path.cwd}/heat/web.yaml")
   }
   disable_rollback = true
   #  disable_rollback = false

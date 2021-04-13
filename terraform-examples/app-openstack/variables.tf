@@ -113,3 +113,8 @@ variable "ssh_access_cidr" {
   type    = string
   default = "0.0.0.0/0"
 }
+
+variable "ssh_authorized_keys" {
+  type    = list(string)
+  default = []
+}

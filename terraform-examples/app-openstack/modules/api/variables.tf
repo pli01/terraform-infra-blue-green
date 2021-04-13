@@ -3,30 +3,16 @@ variable "fip" {
   default = ""
 }
 
-variable "color" {
-  description = "color"
-}
-variable "maxcount" {
-  description = "maxcount"
-}
-variable "prefix_name" {
-  description = "prefix_name"
-}
-
-variable "network" {
-  type    = string
-}
-variable "subnet" {
-  type    = string
-}
-variable "source_volid" {
-  type    = string
-}
+variable "color" {}
+variable "maxcount" {}
+variable "prefix_name" {}
+variable "network" {}
+variable "subnet" {}
+variable "source_volid" {}
 
 variable "security_group" {
   type    = string
 }
-
 
 #### GLANCE
 variable "image" {
@@ -51,12 +37,5 @@ variable "flavor" {
 }
 
 #### Variable used in heat and cloud-init
-variable "no_proxy" {
-  type    = string
-  default = "localhost"
-}
-
-variable "ssh_access_cidr" {
-  type    = string
-  default = "0.0.0.0/0"
-}
+variable "affinity_group" {}
+variable "user_data" {}

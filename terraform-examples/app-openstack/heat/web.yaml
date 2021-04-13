@@ -3,12 +3,16 @@ heat_template_version: 2015-10-15
 description: Create a simple instance
 
 parameters:
+
   key_name:
     type: string
     label: Name of keypair to assign to servers
     description: key_name=foo
     constraints:
       - {custom_constraint: nova.keypair}
+
+  user_data:
+    type: string
 
   floating_ip_id:
     type: string
@@ -27,19 +31,6 @@ parameters:
     constraints:
       - {custom_constraint: neutron.subnet}
 
-  worker_subnet_cidr:
-    type: string
-    default: "192.168.1.0/24"
-  ssh_access_cidr:
-    type: string
-    label: IP range that is permitted to SSH to worker instance
-    description: >
-       The CIDR IP range that is permitted to SSH to worker instance.
-       Note - a value of 0.0.0.0/0 will allow access from ANY IP address.
-    default: "192.168.2.2/32"
-    constraints:
-      - {custom_constraint: net_cidr}
-
   security_group:
     type: comma_delimited_list
 
@@ -49,13 +40,6 @@ parameters:
     description: flavor=small
     constraints:
       - {custom_constraint: nova.flavor}
-  worker_image:
-    type: string
-    label: The debian worker_image based for instance
-    description: worker_image=debian-8-latest
-    default: debian-8-latest
-    constraints:
-      - {custom_constraint: glance.image}
   worker_vol_type:
     type: string
     description: The volume type of the Cinder volume for instance
@@ -65,16 +49,6 @@ parameters:
     type: number
     default: 1200
     description: timeout for the Wait Conditions
-  ssh_authorized_keys:
-    type: comma_delimited_list
-    label: ssh_authorized_keys
-    description: Comma separated list of keypair.
-    default: []
-
-  no_proxy:
-    type: string
-    label: no_proxy variable
-    default: ""
 
   api_server:
     type: string
@@ -94,9 +68,9 @@ outputs:
   worker_private_ip_address:
     description: worker private ip address
     value: {get_attr: [worker, networks, {get_param: worker_network}, 0]}
-  worker_public_ip_address:
-    description: worker public ip address
-    value: {get_attr: [worker, networks, {get_param: worker_network}, 1]}
+#  worker_public_ip_address:
+#    description: worker public ip address
+#    value: {get_attr: [worker, networks, {get_param: worker_network}, 1]}
 ####  Debug worker object, tf outputs doesn t like this format
 #  worker_net_info:
 #    description: worker net info
@@ -163,44 +137,34 @@ resources:
     properties:
       parts:
         - config: {get_resource: included_files}
-        - config: {get_resource: worker_postconf}
-        - config: {get_resource: finish_postinstall}
+        - config: {get_param: user_data}
+          type: multipart
 
   included_files:
     type: "OS::Heat::CloudConfig"
     properties:
       cloud_config:
         merge_how: dict(recurse_array)+list(append)
-        final_message: "The instance is up, after $UPTIME seconds"
         write_files:
           - path: /home/debian/common_functions.sh
-            permissions: 0700
+            permissions: 0600
             content:
               str_replace:
-                template:
-                  get_file: heat/config-scripts/common_functions.sh
+                template: |
+                  #!/bin/bash
+                  # Send success status to OpenStack WaitCondition
+                  # notify_status [SUCCESS|FAILURE] "message"
+                  function notify_status() {
+                     unset http_proxy
+                     unset https_proxy
+                     unset no_proxy
+                     ret=1
+                     case $1 in
+                        SUCCESS) ret=0 ;;
+                     esac
+                     $wc_notify  --data-binary \
+                         "{\"status\": \"$1\", \"reason\": \"$2\", \"data\": \"$2\"}"
+                     exit $ret
+                  }
                 params:
                   $wc_notify: {get_attr: [wait_handle, curl_cli]}
-
-  worker_postconf:
-    type: "OS::Heat::SoftwareConfig"
-    properties:
-      group: ungrouped
-      config:
-        str_replace:
-          template:
-            get_file: heat/config-scripts/worker_postconf.sh
-          params:
-            $ssh_authorized_keys: {get_param: ssh_authorized_keys}
-            $no_proxy: {get_param: no_proxy}
-
-  finish_postinstall:
-    type: "OS::Heat::SoftwareConfig"
-    properties:
-      group: ungrouped
-      config:
-        str_replace:
-          template:
-            get_file: heat/config-scripts/finish_postinstall.sh
-          params:
-            $no_proxy: {get_param: no_proxy}
