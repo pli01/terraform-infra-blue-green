@@ -9,7 +9,7 @@ ARG PACKAGES="make unzip wget curl jq python-apt python python-pip apt-transport
 #ARG PACKAGES="make unzip curl python-apt"
 # Run
 ENV DEBIAN_FRONTEND noninteractive
-ENV TERRAFORM_VERSION=0.14.5
+ENV TERRAFORM_VERSION=0.14.10
 
 # Install default packages
 # Use nexus repo to speed up build if MIRROR_DEBIAN defined
