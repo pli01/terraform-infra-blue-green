@@ -1,4 +1,4 @@
-heat_template_version: 2015-10-15
+heat_template_version: 2016-10-14
 
 description: Create a simple instance
 
@@ -67,7 +67,8 @@ outputs:
     value: {get_resource: worker}
   worker_private_ip_address:
     description: worker private ip address
-    value: {get_attr: [worker, networks, {get_param: worker_network}, 0]}
+    value: {get_attr: [worker_port, fixed_ips, 0, ip_address]}
+#    value: {get_attr: [worker, networks, {get_param: worker_network}, 0]}
 #  worker_public_ip_address:
 #    description: worker public ip address
 #    value: {get_attr: [worker, networks, {get_param: worker_network}, 1]}
@@ -94,7 +95,7 @@ resources:
     type: OS::Neutron::Port
     properties:
       network: {get_param: worker_network}
-      security_groups: { get_param: security_group }
+      security_groups: {get_param: security_group}
       fixed_ips:
         - subnet_id: {get_param: worker_subnet}
 
@@ -121,8 +122,8 @@ resources:
       user_data: {get_resource: postinstall_worker}
       user_data_update_policy: IGNORE
       metadata:
-        api_server: { get_param: api_server }
-        color: { get_param: color }
+        api_server: {get_param: api_server}
+        color: {get_param: color}
 
   floating_ip:
     type: OS::Neutron::FloatingIPAssociation
@@ -163,7 +164,7 @@ resources:
                         SUCCESS) ret=0 ;;
                      esac
                      $wc_notify  --data-binary \
-                         "{\"status\": \"$1\", \"reason\": \"$2\", \"data\": \"$2\"}"
+                         "{\"status\":\"$1\",\"reason\":\"$2\",\"data\":\"$2\"}"
                      exit $ret
                   }
                 params:
