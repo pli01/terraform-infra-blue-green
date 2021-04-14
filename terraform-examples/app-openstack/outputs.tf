@@ -32,14 +32,12 @@ output "blue_api_stack_public_ip" {
 
 output "web_stack_output" {
   value = module.web.stack_output
-  # value = openstack_orchestration_stack_v1.web.outputs
   depends_on = [
     module.web
   ]
 }
 output "api_stack_output" {
   value = module.blue_api[*].stack_output
-  # value = openstack_orchestration_stack_v1.web.outputs
   depends_on = [
     module.blue_api
   ]
@@ -52,6 +50,6 @@ output "web_private_ip" {
   value = local.web_private_ip
 }
 output "web_public_ip" {
-  value = openstack_networking_floatingip_v2.web.address
+  value = module.base.web_address
 }
 

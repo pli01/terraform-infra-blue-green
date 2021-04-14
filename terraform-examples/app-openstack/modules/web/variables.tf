@@ -1,20 +1,16 @@
-variable "fip" {
-  type    = string
+variable "fip" {}
+
+variable "network" {}
+variable "subnet" {}
+variable "source_volid" {}
+
+variable "no_proxy" {}
+variable "ssh_authorized_keys" {
+  type    = list(string)
+  default = []
 }
 
-variable "network" {
-  type    = string
-}
-variable "subnet" {
-  type    = string
-}
-variable "source_volid" {
-  type    = string
-}
-
-variable "security_group" {
-  type    = string
-}
+variable "security_group" {}
 
 
 #### GLANCE
@@ -40,14 +36,5 @@ variable "flavor" {
 }
 
 #### Variable used in heat and cloud-init
-variable "color" {
-  type    = string
-}
-
-variable "api_server" {
-  type    = string
-}
-
-variable "user_data" {
-  type    = string
-}
+variable "color" {}
+variable "api_server" {}

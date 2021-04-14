@@ -9,10 +9,12 @@ variable "prefix_name" {}
 variable "network" {}
 variable "subnet" {}
 variable "source_volid" {}
-
-variable "security_group" {
-  type    = string
+variable "no_proxy" {}
+variable "ssh_authorized_keys" {
+  type    = list(string)
+  default = []
 }
+variable "security_group" {}
 
 #### GLANCE
 variable "image" {
@@ -38,4 +40,3 @@ variable "flavor" {
 
 #### Variable used in heat and cloud-init
 variable "affinity_group" {}
-variable "user_data" {}
