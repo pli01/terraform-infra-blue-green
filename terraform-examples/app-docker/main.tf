@@ -73,15 +73,15 @@ data "docker_registry_image" "web" {
 }
 
 resource "docker_image" "web" {
-#  keep_locally  = true
-#  name          = data.docker_registry_image.web.name
-#  pull_triggers = [data.docker_registry_image.web.sha256_digest]
-  name          = "build-web"
+  #  keep_locally  = true
+  #  name          = data.docker_registry_image.web.name
+  #  pull_triggers = [data.docker_registry_image.web.sha256_digest]
+  name         = "build-web"
   force_remove = true
   build {
-    path      = abspath("${path.module}/nginx")
+    path       = abspath("${path.module}/nginx")
     dockerfile = "Dockerfile"
-    remove = true
+    remove     = true
   }
 }
 
@@ -102,11 +102,11 @@ resource "docker_container" "web" {
     "COLOR=${var.color}",
     format("API_SERVER=%s", join(" ", formatlist("%s %s:%s;", "server", flatten(local.active_server_name), var.api_port))),
   ]
-#  volumes {
-#    host_path      = abspath("${path.module}/nginx-conf.d/api.conf.template")
-#    container_path = "/etc/nginx/templates/default.conf.template"
-#    read_only      = true
-#  }
+  #  volumes {
+  #    host_path      = abspath("${path.module}/nginx-conf.d/api.conf.template")
+  #    container_path = "/etc/nginx/templates/default.conf.template"
+  #    read_only      = true
+  #  }
 }
 
 locals {
