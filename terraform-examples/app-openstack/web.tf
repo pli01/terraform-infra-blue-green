@@ -10,11 +10,11 @@ locals {
 
 module "web" {
   source         = "./modules/web"
-  fip            = openstack_networking_floatingip_v2.web.id
-  network        = openstack_networking_network_v2.generic.id
-  subnet         = openstack_networking_subnet_v2.http.id
-  source_volid   = openstack_blockstorage_volume_v2.root_volume.id
-  security_group = openstack_networking_secgroup_v2.web_secgroup_1.id
+  fip            = module.base.web_id
+  network        = module.base.network_id
+  subnet         = module.base.subnet_id
+  source_volid   = module.base.root_volume_id
+  security_group = module.base.web_secgroup_id
   user_data      = data.cloudinit_config.web_config.rendered
   vol_type       = var.vol_type
   flavor         = var.flavor
@@ -25,10 +25,6 @@ module "web" {
   api_server = format("%s", join(" ", formatlist("%s %s:%s;", "server", flatten(local.active_server_ip), var.api_port)))
   depends_on = [
     local.stack_status,
-    openstack_networking_subnet_v2.http,
-    openstack_blockstorage_volume_v2.root_volume,
-    openstack_networking_secgroup_v2.web_secgroup_1,
-    openstack_networking_floatingip_v2.web
+    module.base
   ]
-
 }

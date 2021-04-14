@@ -55,4 +55,3 @@ EOF
 
 
 echo "## End post installation"
-false
