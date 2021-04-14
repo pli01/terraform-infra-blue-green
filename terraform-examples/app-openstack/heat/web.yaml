@@ -1,4 +1,4 @@
-heat_template_version: 2015-10-15
+heat_template_version: 2016-10-14
 
 description: Create a simple instance
 
@@ -67,7 +67,8 @@ outputs:
     value: {get_resource: worker}
   worker_private_ip_address:
     description: worker private ip address
-    value: {get_attr: [worker, networks, {get_param: worker_network}, 0]}
+    value: {get_attr: [worker_port, fixed_ips, 0, ip_address]}
+#    value: {get_attr: [worker, networks, {get_param: worker_network}, 0]}
 #  worker_public_ip_address:
 #    description: worker public ip address
 #    value: {get_attr: [worker, networks, {get_param: worker_network}, 1]}
@@ -94,7 +95,7 @@ resources:
     type: OS::Neutron::Port
     properties:
       network: {get_param: worker_network}
-      security_groups: { get_param: security_group }
+      security_groups: {get_param: security_group}
       fixed_ips:
         - subnet_id: {get_param: worker_subnet}
 
@@ -116,13 +117,13 @@ resources:
         - device_name: vda
           volume_id: {get_resource: worker_vol}
           delete_on_termination: true
-      config_drive: True
+      config_drive: true
       user_data_format: RAW
       user_data: {get_resource: postinstall_worker}
       user_data_update_policy: IGNORE
       metadata:
-        api_server: { get_param: api_server }
-        color: { get_param: color }
+        api_server: {get_param: api_server}
+        color: {get_param: color}
 
   floating_ip:
     type: OS::Neutron::FloatingIPAssociation
@@ -139,6 +140,7 @@ resources:
         - config: {get_resource: included_files}
         - config: {get_param: user_data}
           type: multipart
+        - config: {get_resource: finish_postinstall}
 
   included_files:
     type: "OS::Heat::CloudConfig"
@@ -163,8 +165,30 @@ resources:
                         SUCCESS) ret=0 ;;
                      esac
                      $wc_notify  --data-binary \
-                         "{\"status\": \"$1\", \"reason\": \"$2\", \"data\": \"$2\"}"
+                         "{\"status\":\"$1\",\"reason\":\"$2\",\"data\":\"$2\"}"
                      exit $ret
                   }
+                  function clean() {
+                   ret=$?
+                   [ "$ret" -gt 0 ] && notify_status FAILURE "Deploy $0: $ret"
+                   exit $ret
+                  }
+                  trap clean EXIT QUIT KILL
                 params:
                   $wc_notify: {get_attr: [wait_handle, curl_cli]}
+
+  finish_postinstall:
+    type: "OS::Heat::SoftwareConfig"
+    properties:
+      group: ungrouped
+      config: |
+         #!/bin/bash
+         #
+         # trigger wait condition
+         #
+         echo "# RUNNING: $(dirname $0)/$(basename $0)"
+         set -xe -o pipefail
+         libdir=/home/debian
+         common_functions=${libdir}/common_functions.sh
+         [ -f ${common_functions} ] && source ${common_functions}
+         notify_status SUCCESS "finish_postinstall success ($ret)"

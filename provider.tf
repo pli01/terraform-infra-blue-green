@@ -10,5 +10,9 @@ terraform {
       source = "kreuzwerker/docker"
     }
     random = {}
+    cloud-init = {
+     version = "2.2.0"
+     source = "hashicorp/cloudinit"
+    }
   }
 }

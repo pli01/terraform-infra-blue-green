@@ -28,7 +28,7 @@ function test_app {
 
 export PROJECT=terraform-examples/app-docker
 export TF_IN_AUTOMATION=true
-TERRAFORM_VERSION=0.14.5
+TERRAFORM_VERSION=0.14.10
 echo "# build docker cli/terraform $TERRAFORM_VERSION"
 make build
 make tf-version
