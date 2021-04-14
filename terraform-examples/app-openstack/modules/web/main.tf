@@ -14,7 +14,7 @@ resource "openstack_orchestration_stack_v1" "web" {
     key_name        = var.key_name
     color           = var.color
     api_server      = var.api_server
-    user_data       = var.user_data
+    user_data      = data.cloudinit_config.web_config.rendered
   }
   # override heat parameters with param files
   environment_opts = {

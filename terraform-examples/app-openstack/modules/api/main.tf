@@ -14,7 +14,7 @@ resource "openstack_orchestration_stack_v1" "api" {
     worker_flavor   = var.flavor
     key_name        = var.key_name
     affinity_group  = var.affinity_group
-    user_data       = var.user_data
+    user_data      = data.cloudinit_config.api_config.rendered
   }
   # override heat parameters with param files
   environment_opts = {

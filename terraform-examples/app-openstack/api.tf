@@ -13,7 +13,8 @@ module "blue_api" {
   flavor         = var.flavor
   image          = var.image
   key_name       = var.key_name
-  user_data      = data.cloudinit_config.api_config.rendered
+  no_proxy          = var.no_proxy
+  ssh_authorized_keys          = var.ssh_authorized_keys
   depends_on = [
     module.base
   ]
@@ -34,7 +35,8 @@ module "green_api" {
   flavor         = var.flavor
   image          = var.image
   key_name       = var.key_name
-  user_data      = data.cloudinit_config.api_config.rendered
+  no_proxy          = var.no_proxy
+  ssh_authorized_keys          = var.ssh_authorized_keys
   depends_on = [
     module.base
   ]
