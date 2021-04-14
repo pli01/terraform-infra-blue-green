@@ -4,14 +4,12 @@ data "cloudinit_config" "web_config" {
   base64_encode = false
 
   # order matter
-
   # cloud-init.cfg
   part {
     filename     = "cloud-init.cfg"
     content_type = "text/cloud-config"
     content      = file("${path.module}/heat/config-scripts/cloud-init.tpl")
   }
-
   # config.cfg sourced in each script, and contains all needed variables
   part {
     content_type = "text/plain"
@@ -20,15 +18,10 @@ data "cloudinit_config" "web_config" {
       no_proxy            = var.no_proxy
     })
   }
-
+  # post conf
   part {
     content_type = "text/plain"
     content      = file("${path.module}/heat/config-scripts/worker_postconf.sh")
-  }
-
-  part {
-    content_type = "text/plain"
-    content      = file("${path.module}/heat/config-scripts/finish_postinstall.sh")
   }
 }
 
@@ -43,7 +36,6 @@ data "cloudinit_config" "api_config" {
     content_type = "text/cloud-config"
     content      = file("${path.module}/heat/config-scripts/cloud-init.tpl")
   }
-
   # config.cfg sourced in each script, and contains all needed variables
   part {
     content_type = "text/plain"
@@ -52,14 +44,9 @@ data "cloudinit_config" "api_config" {
       no_proxy            = var.no_proxy
     })
   }
-
+  # post conf
   part {
     content_type = "text/plain"
     content      = file("${path.module}/heat/config-scripts/worker_api_postconf.sh")
-  }
-
-  part {
-    content_type = "text/plain"
-    content      = file("${path.module}/heat/config-scripts/finish_postinstall.sh")
   }
 }
