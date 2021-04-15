@@ -19,6 +19,9 @@ TF_CLI_ARGS_output  ?=
 
 # terragrunt
 TG_BIN_VERSION :=
+TERRAGRUNT_TFPATH := ${TF_BIN}
+TERRAGRUNT_DOWNLOAD := $(shell pwd)/.terragrunt-cache
+TF_INPUT := # true
 
 # docker-compose vars
 DC       := $(shell type -p docker-compose)
