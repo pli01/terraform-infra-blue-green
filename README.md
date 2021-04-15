@@ -88,7 +88,7 @@ server {
 ### Test it
  Optionnal prerequisite: download and install terraform cli in ./bin if not already installed
 ```
-# make install-cli
+# make install-tf
 ```
 * First init
 ```
@@ -140,12 +140,12 @@ This example is described in [terraform-examples/app-openstack](terraform-exampl
 ## Usage:
 
 ### use terraform cli
-* install-cli: install cli/terraform in bin/ dir 
+* install-tf: install cli/terraform in bin/ dir 
 ```
   # install latest terraform cli
-  make install-cli
+  make install-tf
   # or install specific terraform cli version
-  make install-cli TF_BIN_VERSION=0.14.5
+  make install-tf TF_BIN_VERSION=0.14.5
 ```
 
 * format: check and format tf files

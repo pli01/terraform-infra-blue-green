@@ -17,6 +17,9 @@ TF_CLI_ARGS_destroy ?= ${TF_VAR_FILE} -auto-approve
 TF_CLI_ARGS_show    ?=
 TF_CLI_ARGS_output  ?=
 
+# terragrunt
+TG_BIN_VERSION :=
+
 # docker-compose vars
 DC       := $(shell type -p docker-compose)
 DC_BUILD_ARGS := --pull --no-cache --force-rm
@@ -42,8 +45,10 @@ display:
 #
 build:
 	${DC} -f ${DC_TF_DOCKER_CLI}  build ${DC_BUILD_ARGS}
-install-cli:
+install-tf:
 	@scripts/install-terraform.sh ${TF_BIN_VERSION}
+install-tg:
+	@scripts/install-terragrunt.sh ${TG_BIN_VERSION}
 #
 # launch terraform with docker-compose
 #
