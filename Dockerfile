@@ -10,6 +10,7 @@ ARG PACKAGES="make unzip wget curl jq python-apt python python-pip apt-transport
 # Run
 ENV DEBIAN_FRONTEND noninteractive
 ENV TERRAFORM_VERSION=0.14.10
+ENV TERRAGRUNT_VERSION=0.28.22
 
 # Install default packages
 # Use nexus repo to speed up build if MIRROR_DEBIAN defined
@@ -41,5 +42,8 @@ COPY provider.tf .
 RUN mkdir -p /usr/local/share/terraform/plugins && \
       echo 'plugin_cache_dir = "/usr/local/share/terraform/plugins"' > $HOME/.terraformrc && \
       terraform init -backend=false
+
+# install terragrunt version
+RUN curl -sL -o /usr/local/bin/terragrunt https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_linux_amd64 && terragrunt --version
 
 ENTRYPOINT ["/bin/bash"]
