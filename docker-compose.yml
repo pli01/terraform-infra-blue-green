@@ -23,15 +23,18 @@ services:
       http_proxy: ${http_proxy}
       https_proxy: ${http_proxy}
       no_proxy: ${no_proxy}
-      TF_DATA_DIR: ${TF_DATA_DIR:-/terraform/.terraform}
-      TF_VAR_FILE: ${TF_VAR_FILE}
+      TF_DATA_DIR: /terraform/.terraform
       TF_IN_AUTOMATION: ${TF_IN_AUTOMATION:-true}
+      TF_VAR_FILE: ${TF_VAR_FILE}
       TF_LOG: ${TF_LOG}
+      TF_CLI_ARGS: ${TF_CLI_ARGS}
       TF_CLI_ARGS_init: ${TF_CLI_ARGS_init}
       TF_CLI_ARGS_validate: ${TF_CLI_ARGS_validate}
       TF_CLI_ARGS_plan: ${TF_CLI_ARGS_plan}
       TF_CLI_ARGS_apply: ${TF_CLI_ARGS_apply}
       TF_CLI_ARGS_destroy: ${TF_CLI_ARGS_destroy}
+      TF_CLI_ARGS_show: ${TF_CLI_ARGS_show}
+      TF_CLI_ARGS_output: ${TF_CLI_ARGS_output}
       TAINT_ADDRESS: ${TAINT_ADDRESS}
       OS_AUTH_URL: ${OS_AUTH_URL}
       OS_REGION_NAME: ${OS_REGION_NAME}
