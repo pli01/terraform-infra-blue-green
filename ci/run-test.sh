@@ -41,7 +41,7 @@ make  PROJECT=$PROJECT DC_TF_ENV=" -f docker-compose.app-docker.yml" destroy
 export TF_BIN=bin/terraform
 
 echo "# install local terraform cli $TERRAFORM_VERSION"
-make install-cli TF_BIN_VERSION=$TERRAFORM_VERSION
+make install-tf TF_BIN_VERSION=$TERRAFORM_VERSION
 
 echo "# $PROJECT: init"
 make TF_BIN=$TF_BIN PROJECT=$PROJECT init
