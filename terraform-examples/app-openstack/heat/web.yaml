@@ -13,6 +13,7 @@ parameters:
 
   user_data:
     type: string
+    default: ""
 
   floating_ip_id:
     type: string
@@ -138,8 +139,11 @@ resources:
     properties:
       parts:
         - config: {get_resource: included_files}
+        # postconf in "user_data" param in multipart mime format
         - config: {get_param: user_data}
           type: multipart
+        # (Optional) to add your custom postconf, uncomment this line and the worker_postconf section below
+        #- config: {get_resource: worker_postconf}
         - config: {get_resource: finish_postinstall}
 
   included_files:
@@ -164,8 +168,17 @@ resources:
                      case $1 in
                         SUCCESS) ret=0 ;;
                      esac
-                     $wc_notify  --data-binary \
+                     wc_notify="$wc_notify"
+                    if ! type -p curl ; then
+                    cat <<EOF | sed -e 's|curl -i -X|wget -v -O- --content-on-error  --method|g; s| -H | --header |g; s|--data-binary|--body-data|g;' | bash
+                     ${wc_notify} --data-binary "{\"status\":\"$1\",\"reason\":\"$2\",\"data\":\"$2\"}"
+                  EOF
+                     else
+                     cat <<EOF | bash
+                     ${wc_notify} --data-binary \
                          "{\"status\":\"$1\",\"reason\":\"$2\",\"data\":\"$2\"}"
+                  EOF
+                     fi
                      exit $ret
                   }
                   function clean() {
@@ -192,3 +205,11 @@ resources:
          common_functions=${libdir}/common_functions.sh
          [ -f ${common_functions} ] && source ${common_functions}
          notify_status SUCCESS "finish_postinstall success ($ret)"
+
+  # place in the script your custom postconf
+#  worker_postconf:
+#    type: "OS::Heat::SoftwareConfig"
+#    properties:
+#      group: ungrouped
+#      config:
+#          get_file: config-scripts/worker_web_postconf.sh
