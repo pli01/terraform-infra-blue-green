@@ -21,8 +21,6 @@ Some examples on how to implement blue green with different stack and provider (
     + install terraform cli in /usr/local/bin
     + install versioned terraform plugins from providers.tf in /usr/local/share/terraform/plugins
 
-
-
 ## app-docker example
 
 This example is described in [terraform-examples/app-docker](terraform-examples/app-docker) and will deploy the following components
@@ -190,19 +188,18 @@ time make PROJECT="terraform-examples/app-openstack" tf-plan
   external_network="ext-net"
   color="green"
   # end file
-  make PROJECT="terraform-examples/app-openstack" TF_VAR_FILE="-var-file=/terraform/config.auto.tfvars" DC_TF_ENV=" -f docker-compose.app-openstack.yml" tf-deploy
+  make PROJECT="terraform-examples/app-openstack" TF_VAR_FILE="-var-file=/data/config.auto.tfvars" DC_TF_ENV=" -f docker-compose.app-openstack.yml" tf-deploy
 ```
 
 * or With terraform docker cli, you can convert the tf config.vars in a TF_VAR_variable file, named as "app-openstack.env". This file is automatically loaded with docker-compose if present
 ```
   # cat app-openstack.env (no quote around values)
-  TF_VAR_dns_ip=["10.228.245.129","10.228.245.130"]
-  TF_VAR_external_network=ext-net-z1
+  TF_VAR_dns_ip=["10.1.1.1", "10.2.2.2"]
+  TF_VAR_external_network=ext-net
   TF_VAR_color=green
 
   make PROJECT="terraform-examples/app-openstack" DC_TF_ENV=" -f docker-compose.app-openstack.yml" tf-deploy
 ```
-
 
 ## TODO:
 * environment files

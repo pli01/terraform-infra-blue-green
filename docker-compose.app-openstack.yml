@@ -3,4 +3,4 @@ version: '3.5'
 services:
   terraform:
     volumes:
-      - ./config.auto.tfvars:/terraform/config.auto.tfvars
+      - ./config.auto.tfvars:/data/config.auto.tfvars

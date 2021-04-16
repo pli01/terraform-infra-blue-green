@@ -23,7 +23,7 @@ services:
       http_proxy: ${http_proxy}
       https_proxy: ${http_proxy}
       no_proxy: ${no_proxy}
-      TF_DATA_DIR: /terraform/.terraform
+      TF_DATA_DIR: /data/.terraform
       TF_IN_AUTOMATION: ${TF_IN_AUTOMATION:-true}
       TF_VAR_FILE: ${TF_VAR_FILE}
       TF_LOG: ${TF_LOG}
@@ -48,8 +48,8 @@ services:
       OS_CACERT: ${OS_CACERT}
       OS_INSECURE: ${OS_INSECURE:-true}
     volumes:
-      - ./terraform-examples:/terraform/terraform-examples
-      - ./Makefile:/terraform/Makefile
+      - ./terraform-examples:/data/terraform-examples
+      - ./Makefile:/data/Makefile
 networks:
   tf-network:
     driver: bridge
