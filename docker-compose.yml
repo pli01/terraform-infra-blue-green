@@ -46,7 +46,7 @@ services:
       OS_PASSWORD: ${OS_PASSWORD}
       OS_USERNAME: ${OS_USERNAME}
       OS_CACERT: ${OS_CACERT}
-      OS_INSECURE: ${OS_INSECURE}
+      OS_INSECURE: ${OS_INSECURE:-true}
     volumes:
       - ./terraform-examples:/terraform/terraform-examples
       - ./Makefile:/terraform/Makefile

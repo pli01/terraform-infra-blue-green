@@ -208,3 +208,4 @@ time make PROJECT="terraform-examples/app-openstack" tf-plan
 * environment files
 * use docker cli
 * add wrapper to detect current color from previous output and change (if blue, then green)
+* terragrunt wrapper

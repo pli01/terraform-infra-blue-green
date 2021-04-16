@@ -5,3 +5,4 @@ terraform_
 *.tfstate*
 cache
 .terragrunt*
+*.tfvars
