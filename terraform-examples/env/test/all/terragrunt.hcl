@@ -1,5 +1,5 @@
 terraform {
-  source = "../../../modules//base"
+  source = "../../..//app-openstack"
 }
 
 include {
