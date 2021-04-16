@@ -44,6 +44,8 @@ RUN mkdir -p /usr/local/share/terraform/plugins && \
       terraform init -backend=false
 
 # install terragrunt version
-RUN curl -sL -o /usr/local/bin/terragrunt https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_linux_amd64 && terragrunt --version
+RUN curl -sL -o /usr/local/bin/terragrunt https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_linux_amd64 && \
+     chmod +x /usr/local/bin/terragrunt && \
+     terragrunt --version
 
 ENTRYPOINT ["/bin/bash"]
